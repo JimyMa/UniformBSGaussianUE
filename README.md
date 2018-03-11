@@ -1,4 +1,5 @@
-
+<script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-MML-AM_CHTML">
+</script>
 # 密集热点区域无线网络区域的性能分析与优化
 
 ## 课题来源
