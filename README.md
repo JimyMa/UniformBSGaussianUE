@@ -170,9 +170,10 @@ $$
 
 上述条件概率可用下述积分式表达:
 $$
-P_c(T, \lambda, \alpha,\sigma) = \int_0^{\infty}\int_D^{+\infty}\mathbf{P}\left(\mathsf{SINR}>T\mid D\right)\ f_R(R)\ f_D(D)\ \mathrm{d}R\ \mathrm{d}D 
-+\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \\  
-\int^{\infty}_0\int_0^{D}\mathbf{P}\left(\mathsf{SINR}>T\mid R,D\right)\ f_R(R)\ f_D(D)\ \mathrm{d}R\ \mathrm{d}D
+\begin{align}
+P_c(T, \lambda, \alpha,\sigma) =& \int_0^{\infty}\int_D^{+\infty}\mathbf{P}\left(\mathsf{SINR}>T\mid D\right)\ f_R(R)\ f_D(D)\ \mathrm{d}R\ \mathrm{d}D \\ 
+&+\int^{\infty}_0\int_0^{D}\mathbf{P}\left(\mathsf{SINR}>T\mid R,D\right)\ f_R(R)\ f_D(D)\ \mathrm{d}R\ \mathrm{d}D
+\end{align}
 $$
 
 即根据全概率公式,总的覆盖率可以分解为
