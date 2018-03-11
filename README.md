@@ -190,8 +190,8 @@ $$
 由于当事件二发生时,不是距热点基站较远, 就是距其服务基站较近, 因此热点基站对其的影响可以忽略不计, 上述积分式就可以表达为:
 $$
 \begin{align}
-P_c(T, \lambda, \alpha,\sigma) = \int_0^{+\infty}\int_D^{+\infty}\mathbf{P}\left(\mathsf{SINR}>T\mid D\right)\ f_R(R)\ f_D(D)\ \mathrm{d}R\ \mathrm{d}D \\
-+\int^{+\infty}_0\int_0^{D}\mathbf{P}\left(\mathsf{SINR}>T\mid R\right)\ f_R(R)\ f_D(D)\ \mathrm{d}R\ \mathrm{d}D
+P_c(T, \lambda, \alpha,\sigma) =& \int_0^{+\infty}\int_D^{+\infty}\mathbf{P}\left(\mathsf{SINR}>T\mid D\right)\ f_R(R)\ f_D(D)\ \mathrm{d}R\ \mathrm{d}D \\
+&+\int^{+\infty}_0\int_0^{D}\mathbf{P}\left(\mathsf{SINR}>T\mid R\right)\ f_R(R)\ f_D(D)\ \mathrm{d}R\ \mathrm{d}D
 \end{align}
 $$
 

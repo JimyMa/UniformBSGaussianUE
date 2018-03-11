@@ -213,7 +213,7 @@ class ServiceRegion(object):
                                alpha=0.5,
                                cmap='jet',
                                vmin=0,
-                               vmax=10)
+                               vmax=16)
             # v = np.linspace(-.1, 2.0, 15, endpoint=True)
             plt.colorbar(img)
             # 绘制等高线
@@ -326,7 +326,7 @@ if __name__ == '__main__':
     C.plot_BS_voronoi(ax, show_points_or_not=False)
     # fig.savefig('small_ergodic_capacity.tiff', bbox_inches='tight')
     plt.show()
-    
+
     fig = plt.figure(figsize=(5, 5))
     ax = fig.add_subplot(1, 1, 1)
     C.plot_BS_voronoi(ax)

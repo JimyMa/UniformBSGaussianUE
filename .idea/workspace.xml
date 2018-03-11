@@ -15,7 +15,7 @@
     <SUITE FILE_PATH="coverage/program$hot_service_region.coverage" NAME="hot_service_region Coverage Results" MODIFIED="1520087743503" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/program$hot_service_region_assign.coverage" NAME="hot_service_region_assign Coverage Results" MODIFIED="1519830855504" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/program$cluster.coverage" NAME="cluster Coverage Results" MODIFIED="1520775048802" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
-    <SUITE FILE_PATH="coverage/program$service_region.coverage" NAME="service_region Coverage Results" MODIFIED="1520775110386" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/program$service_region.coverage" NAME="service_region Coverage Results" MODIFIED="1520781127421" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/program$theory.coverage" NAME="theory Coverage Results" MODIFIED="1520160751066" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/program$BS.coverage" NAME="BS Coverage Results" MODIFIED="1519136244172" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
@@ -33,11 +33,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="service_region.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="service_region.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/service_region.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="937">
-              <caret line="341" column="7" lean-forward="false" selection-start-line="341" selection-start-column="7" selection-end-line="341" selection-end-column="7" />
+            <state relative-caret-position="253">
+              <caret line="275" column="20" lean-forward="false" selection-start-line="275" selection-start-column="20" selection-end-line="275" selection-end-column="20" />
               <folding>
                 <element signature="e#25#43#0" expanded="true" />
               </folding>
@@ -45,7 +45,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="simula.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="simula.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/simula.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="234">
@@ -118,7 +118,7 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
-  <component name="ProjectFrameBounds" extendedState="7">
+  <component name="ProjectFrameBounds" extendedState="6">
     <option name="x" value="601" />
     <option name="y" value="106" />
     <option name="width" value="960" />
@@ -177,7 +177,7 @@
   <component name="PropertiesComponent">
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../中期/deploy.png" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/figure/output_7_0.png" />
     <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
   </component>
   <component name="PyConsoleOptionsProvider">
@@ -371,7 +371,7 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="601" y="106" width="1922" height="1092" extended-state="7" />
+    <frame x="601" y="106" width="1922" height="1092" extended-state="6" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901832" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.29557714" sideWeight="0.50875276" order="7" side_tool="true" content_ui="tabs" />
@@ -379,7 +379,7 @@
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32831" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2675026" sideWeight="0.49124727" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32901832" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.32550693" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32550693" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Docker" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32817504" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="SciView" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.67502666" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" x="0" y="24" width="1920" height="1056" />
@@ -818,16 +818,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/service_region.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="937">
-          <caret line="341" column="7" lean-forward="false" selection-start-line="341" selection-start-column="7" selection-end-line="341" selection-end-column="7" />
-          <folding>
-            <element signature="e#25#43#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/small_ergodic_capacity.tiff">
       <provider selected="true" editor-type-id="images">
         <state />
@@ -845,6 +835,16 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="234">
           <caret line="13" column="20" lean-forward="false" selection-start-line="13" selection-start-column="20" selection-end-line="13" selection-end-column="20" />
+          <folding>
+            <element signature="e#25#43#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/service_region.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="253">
+          <caret line="275" column="20" lean-forward="false" selection-start-line="275" selection-start-column="20" selection-end-line="275" selection-end-column="20" />
           <folding>
             <element signature="e#25#43#0" expanded="true" />
           </folding>
