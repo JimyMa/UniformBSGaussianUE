@@ -1,11 +1,10 @@
 <component name="ProjectDictionaryState">
   <dictionary name="zoo2">
     <words>
-      <w>kmeans</w>
-      <w>sklearn</w>
-      <w>stepfilled</w>
-      <w>unnorm</w>
-      <w>voronoi</w>
+      <w>dfsdict</w>
+      <w>matplotlib</w>
+      <w>scipy</w>
+      <w>udntools</w>
     </words>
   </dictionary>
 </component>
