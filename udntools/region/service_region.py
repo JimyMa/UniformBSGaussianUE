@@ -8,9 +8,8 @@ from ..utils.dim2_distance import dim2_distance
 
 class ServiceRegion(BaseRegion, BaseChannel, BaseBS, BaseUE):
     def __init__(self, x_min, x_max, y_min, y_max, bs_number, ue_number,
-                 loss_factor=4.0, small_fade="Rayleigh", noise="Gaussian", big_fade="no_big_fade",
                  layer=1, power=1.0, bs_distribution="uniform",
-                 ue_distribution="uniform"):
+                 ue_distribution="uniform", ue_sigma=0):
         """
         x_min(need to be assigned)
         x_max(need to be assigned)
@@ -28,9 +27,8 @@ class ServiceRegion(BaseRegion, BaseChannel, BaseBS, BaseUE):
         distribution("uniform")
         """
         BaseRegion.__init__(self, x_min, x_max, y_min, y_max)
-        BaseChannel.__init__(self, loss_factor, small_fade, noise, big_fade)
         BaseBS.__init__(self, bs_number, layer, power, bs_distribution)
-        BaseUE.__init__(self, ue_number, ue_distribution)
+        BaseUE.__init__(self, ue_number, ue_distribution, ue_sigma)
         self.set_bs_to_region()
         self.set_ue_to_region()
         self.bs_ue_dict = {}
@@ -38,6 +36,23 @@ class ServiceRegion(BaseRegion, BaseChannel, BaseBS, BaseUE):
         # key: 0, 1, ..., num_bs
         # value: 0, 1, ..., num_ue belong to the key
         self.select_ue()
+
+    def set_ue_sigma(self, sigma):
+        self.ue_sigma = sigma
+        self.kill_ue()
+        self.set_ue_to_region()
+        self.bs_ue_dict = {}
+        self.select_ue()
+
+    def set_ue_distribution(self, distribution):
+        if distribution != self.ue_distribution_:
+            self.kill_ue()
+            self.ue_distribution_ = distribution
+            self.set_ue_to_region()
+            self.select_ue()
+
+    def kill_ue(self):
+        self.ue_position_ = np.array([])
 
     def set_bs_to_region(self):
         return self._set_bs_to_region_func_dict.get(self.bs_distribution_)(self)
@@ -74,5 +89,12 @@ class ServiceRegion(BaseRegion, BaseChannel, BaseBS, BaseUE):
                                           (1, self.ue_number_))
         self.ue_position_ = np.concatenate([ue_position_x, ue_position_y], axis=0)
 
-    _set_ue_to_region_func_dict = {"uniform": set_uniform_ue_to_region}
+    def set_gaussian_ue_to_region(self):
+        self.ue_position_ = np.zeros([2, self.ue_number_])
+        for i in range(0, self.ue_number_):
+            self.ue_position_[:, i] = self.bs_position_[i % self.bs_number_, :] + np.random.randn(2) * self.ue_sigma
+            # self.ue_position_[1, i] = self.bs_position_[i % self.bs_number_, 1] + np.random.rand(1) * self.ue_sigma
+
+    _set_ue_to_region_func_dict = {"uniform": set_uniform_ue_to_region,
+                                   "gaussian": set_gaussian_ue_to_region}
 

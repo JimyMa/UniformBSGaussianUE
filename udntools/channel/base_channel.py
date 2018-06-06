@@ -6,15 +6,16 @@ class BaseChannel(object):
     def __init__(self,
                  path_loss_factor=4.0,
                  small_fade='Rayleigh',
-                 noise='Gaussian',
-                 big_fade='no_big_fade'):
+                 noise='Gaussian'):
         self.path_loss_factor = path_loss_factor
         self.small_fade = small_fade
         self.noise = noise
-        self.big_fade = big_fade
 
     # You can not know the influence of the large scale fade if you don't know distance
     # but distance is not a attr of the channel, so it may be a static function
+
+    def set_path_loss_factor(self, loss_factor):
+        self.path_loss_factor = loss_factor
 
     @staticmethod
     def distance_matrix(bs_position, ue_position):
@@ -43,8 +44,8 @@ class BaseChannel(object):
         if self.small_fade == 'no_small_fade':
             return large_fade_power_matrix
         elif self.small_fade == 'Rayleigh':
-            return np.random.exponential(1, np.shape(large_fade_power_matrix)
-                                         * large_fade_power_matrix)
+            return np.random.exponential(1, np.shape(large_fade_power_matrix))\
+                                         * large_fade_power_matrix
 
     def power_vector(self, bs_position, user_position, p_send):
         """
@@ -65,11 +66,12 @@ class BaseChannel(object):
         sum_power_vector = np.sum(small_fade_power_matrix, axis=0)
         return np.reshape(sum_power_vector-power_vector, (1, -1))
 
-    def sir_vector(self, bs_position, user_position, p_send):
+    def sir_vector(self, bs_position, user_position, p_send=1.0):
         large_fade_power_matrix = self.large_fade_power_matrix(bs_position, user_position, p_send)
         small_fade_power_matrix = self.small_fade_power_matrix(large_fade_power_matrix)
-        power_vector = np.min(small_fade_power_matrix, axis=0)
+        power_vector = small_fade_power_matrix[np.argmax(large_fade_power_matrix, axis=0),
+                                               np.arange(0, np.shape(large_fade_power_matrix)[1])]
         sum_power_vector = np.sum(small_fade_power_matrix, axis=0)
-        interference_vector = sum_power_vector-power_vector, (1, -1)
-        return np.reshape(power_vector / interference_vector)
+        interference_vector = sum_power_vector-power_vector
+        return np.reshape(power_vector / interference_vector, (1, -1))
 
