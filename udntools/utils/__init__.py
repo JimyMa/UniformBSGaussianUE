@@ -1,4 +1,4 @@
-from .dfsdict import DFSDict
+from .dfs_dict_by_distance import DFSDict
 from .dim2_distance import dim2_distance
 from .soft_k_means import SoftKMeans
 from .cdf import cdf_y_axis
