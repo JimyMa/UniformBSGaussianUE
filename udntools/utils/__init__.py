@@ -1,4 +1,4 @@
-from .dfs_dict_by_distance import DFSDict
+from .dfs_dict_by_distance import DFSDictByDistance
 from .dim2_distance import dim2_distance
 from .soft_k_means import SoftKMeans
 from .cdf import cdf_y_axis
@@ -8,7 +8,7 @@ from .pc_theory import pc_uniform_ue_exp
 from .ase_theory import ase_theory_gaussian
 from .ase_theory import ase_theory_uniform
 
-__all__ = ['DFSDict',
+__all__ = ['DFSDictByDistance',
            'dim2_distance',
            'SoftKMeans',
            'cdf_y_axis',
