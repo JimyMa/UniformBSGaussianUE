@@ -10,6 +10,7 @@ class BaseChannel(object):
         self.path_loss_factor = path_loss_factor
         self.small_fade = small_fade
         self.noise = noise
+        self.h_matrix = np.array([])
 
     # You can not know the influence of the large scale fade if you don't know distance
     # but distance is not a attr of the channel, so it may be a static function
@@ -44,8 +45,8 @@ class BaseChannel(object):
         if self.small_fade == 'no_small_fade':
             return large_fade_power_matrix
         elif self.small_fade == 'Rayleigh':
-            return np.random.exponential(1, np.shape(large_fade_power_matrix))\
-                                         * large_fade_power_matrix
+            self.h_matrix = np.random.exponential(1, np.shape(large_fade_power_matrix))
+            return self.h_matrix * large_fade_power_matrix
 
     def power_vector(self, bs_position, user_position, p_send):
         """
@@ -53,7 +54,7 @@ class BaseChannel(object):
         """
         large_fade_power_matrix = self.large_fade_power_matrix(bs_position, user_position, p_send)
         small_fade_power_matrix = self.small_fade_power_matrix(large_fade_power_matrix)
-        power_vector = np.min(small_fade_power_matrix, axis=0)
+        power_vector = np.max(small_fade_power_matrix, axis=0)
         return np.reshape(power_vector, (1, -1))
 
     def interference_vector(self, bs_position, user_position, p_send):
@@ -74,4 +75,6 @@ class BaseChannel(object):
         sum_power_vector = np.sum(small_fade_power_matrix, axis=0)
         interference_vector = sum_power_vector-power_vector
         return np.reshape(power_vector / interference_vector, (1, -1))
+
+
 
