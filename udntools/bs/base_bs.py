@@ -8,7 +8,7 @@ class BaseBS(object):
                  layer=1,
                  power=1.0,
                  bs_distribution="uniform"):
-        self.bs_number_ = bs_number
+        self.bs_number_ = int(bs_number)
         self.bs_layer_ = layer
         self.bs_power_ = power
         self.bs_distribution_ = bs_distribution
