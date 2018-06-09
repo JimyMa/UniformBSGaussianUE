@@ -34,20 +34,20 @@ class DFSDictByDistance(object):
             if ifplot:
                 plt.scatter(position[node, 0],
                             position[node, 1],
-                            c='b')
+                            c='lightskyblue')
         for i in range(self.base_station_num_):
             if i not in self._visited_node \
                     and i != node \
                     and self.distance_logic_[node, i] == 1:
-                np.append(self._visited_node, i)
+                self._visited_node = np.append(self._visited_node, i)
                 if ifplot:
                     plt.plot(position[[i, node], 0],
                              position[[i, node], 1],
-                             'b')
-                    plt.scatter(position[i, 0],
-                                position[i, 1],
-                                c='b')
-                self.dfs(i, position)
+                             'lightpink')
+                    plt.scatter(position[[i, node], 0],
+                                position[[i, node], 1],
+                                c='lightpink')
+                self.dfs(i, position, ifplot)
             else:
                 continue
 
