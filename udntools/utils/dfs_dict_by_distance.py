@@ -43,7 +43,7 @@ class DFSDictByDistance(object):
                 if ifplot:
                     plt.plot(position[[i, node], 0],
                              position[[i, node], 1],
-                             'lightpink')
+                             'hotpink')
                     plt.scatter(position[[i, node], 0],
                                 position[[i, node], 1],
                                 c='lightpink')
