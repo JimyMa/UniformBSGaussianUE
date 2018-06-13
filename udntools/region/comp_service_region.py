@@ -118,3 +118,5 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
         factor_matrix = np.zeros((self.bs_number_, self.ue_number_))
         for key, value in self.cluster_set_.items():
             h_matrix_in_cluster = self.h_matrix_[value, value]
+            w_matrix_in_cluster = h_matrix_in_cluster.I
+
