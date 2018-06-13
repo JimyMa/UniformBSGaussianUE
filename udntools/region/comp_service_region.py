@@ -25,6 +25,7 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
         self.cluster_set_ = {}
         self.cluster_bs_position_ = {}
         self.cluster_ue_position_ = {}
+        self.sir_array = np.array([])
 
     def cluster_by_dfs(self, distance_thold):
         self.cluster_set_ = {}
@@ -115,8 +116,24 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
     # 在联合传输中使用 ZFBF 去进行干扰管理算法
     def comp_zfbf_equal_allocation(self):
         self.generate_h_matrix()
-        factor_matrix = np.zeros((self.bs_number_, self.ue_number_))
-        for key, value in self.cluster_set_.items():
-            h_matrix_in_cluster = self.h_matrix_[value, value]
-            w_matrix_in_cluster = h_matrix_in_cluster.I
+        p_factor_array = np.zeros(self.bs_number_)
+        p_receive_dict = {}
+        for key, values in self.cluster_set_.items():
+            w_matrix_in_cluster = np.array(np.mat(self.h_matrix_[values, values]).I)
+            w_matrix_in_cluster_square = w_matrix_in_cluster ** 2
+            w_matrix_in_cluster_square_sum = np.sum(w_matrix_in_cluster_square, axis=1)
+            cluster_num = np.size(values)
+            p_receive = 1 / np.max(w_matrix_in_cluster_square_sum)
+            p_factor_array[values] = p_receive * w_matrix_in_cluster_square_sum
+            p_receive_dict[key] = p_receive
+        bs_ue_distance = dim2_distance(self.bs_position_, self.ue_position_)
+        p_factor_array = np.reshape(p_factor_array, (-1, 1))
+        large_loss_array = p_factor_array * (bs_ue_distance ** (- self.path_loss_factor))
+        small_large_loss_array = self.h_matrix * large_loss_array
 
+        for key, values in self.cluster_set_.items():
+            received_power = p_receive_dict[key]
+            inference_power = np.sum(small_large_loss_array[:, values], axis=0) - \
+                              np.sum(small_large_loss_array[values, values], axis=0)
+            sir = received_power / inference_power
+            self.sir_array = np.append(self.sir_array, sir)

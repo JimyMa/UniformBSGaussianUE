@@ -13,5 +13,6 @@ class SmallFadeChannel(object):
         self.generate_h_matrix()
 
     def generate_h_matrix(self):
+        self.h_matrix_ = np.array([])
         self.h_matrix_ = np.random.exponential(1, (self.bs_number_,
                                                    self.ue_number_))
