@@ -24,8 +24,7 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
                                   small_fade)
         self.cluster_set_ = {}
         self.cluster_bs_position_ = {}
-        self.cluster_ue_position_service_ = {}
-        self.cluster_ue_position_all_ = {}
+        self.cluster_ue_position_ = {}
 
     def cluster_by_dfs(self, distance_thold):
         self.cluster_set_ = {}
@@ -33,8 +32,22 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
         self.cluster_set_ = DFSDictByDistance(self.bs_position_,
                                               distance_thold).near_distance_dict_
         for key, value in self.cluster_set_.items():
-            self.cluster_bs_position_[key] = np.reshape(self.bs_position_[value, :], (-1, 2))
+            self.cluster_bs_position_[key] = \
+                np.reshape(self.bs_position_[value, :], (-1, 2))
 
+    # 这是一种用户选择方式
+    # 区域联合起来了
+    # 假设一簇内有 l 个基站
+    # 则随机选择区域内的 l 个用户进行服务
+    # 该方法被废弃
+    # 因为与不采用联合传输优化时的场景不相对应
+    # 修改为
+    # 区域内的基站满载
+    # 即区域内每个基站对应的服务区域内随机选择一个用户
+    # 一共 n 个基站，n 个用户
+    # 基站根据上面 cluster 方法得到的字典进行分簇
+
+    '''
     def full_loaded(self):
         for key, values in self.cluster_bs_position_.items():
             if key in self.cluster_ue_position_all_:
@@ -73,6 +86,35 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
             self.cluster_ue_position_service_[key] = \
                 np.reshape(self.cluster_ue_position_service_[key],
                            (2, -1))
+        '''
 
-    def precoding(self):
-        pass
+    def comp_user_generate(self):
+        self.kill_ue()
+        flag_v = np.zeros(self.bs_number_)
+        # 标记是否基站被使用
+        self.ue_position_ = np.zeros((2, self.bs_number_))
+        bs_index = 0
+        count = 0
+
+        while np.sum(flag_v) != self.bs_number_:
+            ue_locate = self.bs_position_[bs_index, :] +\
+                        np.random.randn(2) * self.ue_sigma
+            ue_locate = np.reshape(ue_locate, (2, 1))
+            bs_index = (bs_index + 1) % self.bs_number_
+            distance = np.reshape(dim2_distance(self.bs_position_, ue_locate),
+                                  (self.bs_number_, -1))
+            selected_bs_by_ue = np.argmin(distance, axis=0)
+            if flag_v[selected_bs_by_ue] == 0:
+                self.ue_position_[:, selected_bs_by_ue] = ue_locate
+                flag_v[selected_bs_by_ue] = 1
+            self.ue_number_ = self.bs_number_
+        for key, value in self.cluster_set_.items():
+            self.cluster_ue_position_[key] = \
+                np.reshape(self.ue_position_[:, value], (2, -1))
+
+    # 在联合传输中使用 ZFBF 去进行干扰管理算法
+    def comp_zfbf_equal_allocation(self):
+        self.generate_h_matrix()
+        factor_matrix = np.zeros((self.bs_number_, self.ue_number_))
+        for key, value in self.cluster_set_.items():
+            h_matrix_in_cluster = self.h_matrix_[value, value]
