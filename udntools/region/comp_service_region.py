@@ -32,9 +32,9 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
         self.cluster_bs_position_ = {}
         self.cluster_set_ = DFSDictByDistance(self.bs_position_,
                                               distance_thold).near_distance_dict_
-        for key, value in self.cluster_set_.items():
+        for key, values in self.cluster_set_.items():
             self.cluster_bs_position_[key] = \
-                np.reshape(self.bs_position_[value, :], (-1, 2))
+                np.reshape(self.bs_position_[values, :], (-1, 2))
 
     # 这是一种用户选择方式
     # 区域联合起来了
@@ -89,7 +89,7 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
                            (2, -1))
         '''
 
-    def comp_user_generate(self):
+    def user_generate(self):
         self.kill_ue()
         flag_v = np.zeros(self.bs_number_)
         # 标记是否基站被使用
@@ -98,7 +98,7 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
         count = 0
 
         while np.sum(flag_v) != self.bs_number_:
-            ue_locate = self.bs_position_[bs_index, :] +\
+            ue_locate = self.bs_position_[bs_index, :] + \
                         np.random.randn(2) * self.ue_sigma
             ue_locate = np.reshape(ue_locate, (2, 1))
             bs_index = (bs_index + 1) % self.bs_number_
@@ -109,31 +109,36 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
                 self.ue_position_[:, selected_bs_by_ue] = ue_locate
                 flag_v[selected_bs_by_ue] = 1
             self.ue_number_ = self.bs_number_
-        for key, value in self.cluster_set_.items():
+        for key, values in self.cluster_set_.items():
             self.cluster_ue_position_[key] = \
-                np.reshape(self.ue_position_[:, value], (2, -1))
+                np.reshape(self.ue_position_[:, values], (2, -1))
 
     # 在联合传输中使用 ZFBF 去进行干扰管理算法
-    def comp_zfbf_equal_allocation(self):
+    def zfbf_equal_allocation(self):
         self.generate_h_matrix()
         p_factor_array = np.zeros(self.bs_number_)
         p_receive_dict = {}
         for key, values in self.cluster_set_.items():
-            w_matrix_in_cluster = np.array(np.mat(self.h_matrix_[values, values]).I)
+            w_matrix_in_cluster = np.array(np.mat(self.h_matrix_[values, :][:, values]).I)
             w_matrix_in_cluster_square = w_matrix_in_cluster ** 2
             w_matrix_in_cluster_square_sum = np.sum(w_matrix_in_cluster_square, axis=1)
-            cluster_num = np.size(values)
             p_receive = 1 / np.max(w_matrix_in_cluster_square_sum)
             p_factor_array[values] = p_receive * w_matrix_in_cluster_square_sum
             p_receive_dict[key] = p_receive
         bs_ue_distance = dim2_distance(self.bs_position_, self.ue_position_)
         p_factor_array = np.reshape(p_factor_array, (-1, 1))
         large_loss_array = p_factor_array * (bs_ue_distance ** (- self.path_loss_factor))
-        small_large_loss_array = self.h_matrix * large_loss_array
+        small_large_loss_array = self.h_matrix_ * large_loss_array
+        if (small_large_loss_array < 0).any():
+            print('error')
 
         for key, values in self.cluster_set_.items():
             received_power = p_receive_dict[key]
+            #print(np.sum(small_large_loss_array[:, values], axis=0))
+            #print(np.sum(small_large_loss_array[values, values], axis=0))
             inference_power = np.sum(small_large_loss_array[:, values], axis=0) - \
-                              np.sum(small_large_loss_array[values, values], axis=0)
+                              np.sum(small_large_loss_array[:, values][values, :], axis=0)
             sir = received_power / inference_power
+            if (sir < 0).any():
+                print(sir)
             self.sir_array = np.append(self.sir_array, sir)
