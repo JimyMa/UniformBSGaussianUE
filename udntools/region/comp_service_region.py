@@ -1,4 +1,4 @@
-from . import ServiceRegion
+from .service_region import ServiceRegion
 import numpy as np
 from ..utils.dim2_distance import dim2_distance
 from ..utils.dfs_dict_by_distance import DFSDictByDistance
@@ -25,7 +25,9 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
         self.cluster_set_ = {}
         self.cluster_bs_position_ = {}
         self.cluster_ue_position_ = {}
+        self.cluster_ue_set_ = {}
         self.sir_array = np.array([])
+        self.sir_array_db = np.array([])
 
     def cluster_by_dfs(self, distance_thold):
         self.cluster_set_ = {}
@@ -87,8 +89,19 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
             self.cluster_ue_position_service_[key] = \
                 np.reshape(self.cluster_ue_position_service_[key],
                            (2, -1))
-        '''
+    '''
 
+    # 这是一种用户选择方式
+    # 区域联合起来了
+    # 区域内的基站满载
+    # 即区域内每个基站对应的服务区域内随机选择一个用户
+    # 一共 n 个基站，n 个用户
+    # 基站根据上面 cluster 方法得到的字典进行分簇
+    # 这种方法被废弃
+    # 因为要考虑到所有的生成的用户都要被服务，这是公平性的原则
+    # 现在改为，所有生成的用户均被服务但是采用联合的方式
+    # 用户选择为在簇内随机的选择
+    '''
     def user_generate(self):
         self.kill_ue()
         flag_v = np.zeros(self.bs_number_)
@@ -98,6 +111,7 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
         count = 0
 
         while np.sum(flag_v) != self.bs_number_:
+            count += 1
             ue_locate = self.bs_position_[bs_index, :] + \
                         np.random.randn(2) * self.ue_sigma
             ue_locate = np.reshape(ue_locate, (2, 1))
@@ -112,7 +126,8 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
         for key, values in self.cluster_set_.items():
             self.cluster_ue_position_[key] = \
                 np.reshape(self.ue_position_[:, values], (2, -1))
-
+        print(count)
+    
     # 在联合传输中使用 ZFBF 去进行干扰管理算法
     def zfbf_equal_allocation(self):
         self.generate_h_matrix()
@@ -128,7 +143,7 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
         bs_ue_distance = dim2_distance(self.bs_position_, self.ue_position_)
         p_factor_array = np.reshape(p_factor_array, (-1, 1))
         large_loss_array = p_factor_array * (bs_ue_distance ** (- self.path_loss_factor))
-        small_large_loss_array = self.h_matrix_ * large_loss_array
+        small_large_loss_array = self.h_square_matrix_ * large_loss_array
         if (small_large_loss_array < 0).any():
             print('error')
 
@@ -142,3 +157,43 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
             if (sir < 0).any():
                 print(sir)
             self.sir_array = np.append(self.sir_array, sir)
+            sir_db = 10 * np.log10(sir / 10)
+            self.sir_array_db = np.append(self.sir_array_db, sir_db)
+
+    def sir_array_sim(self, iter=10):
+        self.sir_array = np.array([])
+        self.sir_array_db = np.array([])
+        for i in range(iter):
+            self.user_generate()
+            self.zfbf_equal_allocation()
+    '''
+
+    def get_cluster_ue_position(self):
+        self.cluster_ue_position_ = {}
+        self.cluster_ue_set_ = {}
+        for key, values in self.cluster_set_.items():
+            self.cluster_bs_position_[key] = self.bs_position_[values, :]
+            self.cluster_ue_set_[key] = np.array([])
+            for bs_index in values:
+                ue_position_this_bs = \
+                    np.reshape(self.ue_position_[:, self.bs_ue_dict_[bs_index]], (2, -1))
+                self.cluster_ue_position_[key] = \
+                    np.concatenate([self.cluster_ue_position_[key],
+                                    ue_position_this_bs], axis=1)  \
+                    if np.size(self.cluster_ue_position_[key]) > 0 \
+                    else ue_position_this_bs
+                self.cluster_ue_set_[key] = np.append(self.cluster_ue_set_[key],
+                                                      self.bs_ue_dict_[bs_index])
+
+    def zfbf_equal_allocation(self):
+        self.get_cluster_ue_position()
+        self.generate_h_matrix()
+        for key, values in self.cluster_set_.items():
+            ue_num_now = np.size(self.cluster_set_[key])
+            bs_num = np.size(self.cluster_ue_set_[key])
+            ue_index = np.arange(0, ue_num_now, 1)
+            if ue_num_now >= bs_num:
+                ue_chosen = np.sort(np.random.choice(ue_index, bs_num, replace=False))
+            else:
+                ue_chosen = ue_index
+        pass

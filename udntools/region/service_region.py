@@ -31,7 +31,7 @@ class ServiceRegion(BaseRegion, BaseChannel, BaseBS, BaseUE):
         BaseUE.__init__(self, ue_number, ue_distribution, ue_sigma)
         self.set_bs_to_region()
         self.set_ue_to_region()
-        self.bs_ue_dict = {}
+        self.bs_ue_dict_ = {}
         # a dict that show which ue belong to which bs
         # key: 0, 1, ..., num_bs
         # value: 0, 1, ..., num_ue belong to the key
@@ -41,7 +41,7 @@ class ServiceRegion(BaseRegion, BaseChannel, BaseBS, BaseUE):
         self.ue_sigma = sigma
         self.kill_ue()
         self.set_ue_to_region()
-        self.bs_ue_dict = {}
+        self.bs_ue_dict_ = {}
         self.select_ue()
 
     def set_ue_distribution(self, distribution):
@@ -69,13 +69,13 @@ class ServiceRegion(BaseRegion, BaseChannel, BaseBS, BaseUE):
     _set_bs_to_region_func_dict = {"uniform": set_uniform_bs_to_region}
 
     def select_ue(self):
-        self.bs_ue_dict = {}
+        self.bs_ue_dict_ = {}
         distance = dim2_distance(self.bs_position_, self.ue_position_)
         selected_bs_index = np.argmin(distance, axis=0)
         for i in range(self.bs_number_):
-            self.bs_ue_dict[i] = []
+            self.bs_ue_dict_[i] = np.array([])
         for ue_index, bs_index in enumerate(selected_bs_index):
-            self.bs_ue_dict[bs_index].append(ue_index)
+            np.append(self.bs_ue_dict_[bs_index], ue_index)
 
     def set_ue_to_region(self):
         return self._set_ue_to_region_func_dict.get(self.ue_distribution_)(self)
