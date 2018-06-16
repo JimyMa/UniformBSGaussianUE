@@ -9,7 +9,7 @@ from ..utils.dim2_distance import dim2_distance
 class ServiceRegion(BaseRegion, BaseChannel, BaseBS, BaseUE):
     def __init__(self, x_min, x_max, y_min, y_max, bs_number, ue_number,
                  layer=1, power=1.0, bs_distribution="uniform",
-                 ue_distribution="uniform", ue_sigma=0):
+                 ue_distribution="gaussian", ue_sigma=0):
         """
         x_min(need to be assigned)
         x_max(need to be assigned)
@@ -73,9 +73,9 @@ class ServiceRegion(BaseRegion, BaseChannel, BaseBS, BaseUE):
         distance = dim2_distance(self.bs_position_, self.ue_position_)
         selected_bs_index = np.argmin(distance, axis=0)
         for i in range(self.bs_number_):
-            self.bs_ue_dict_[i] = np.array([])
+            self.bs_ue_dict_[i] = np.array([], dtype=np.int)
         for ue_index, bs_index in enumerate(selected_bs_index):
-            np.append(self.bs_ue_dict_[bs_index], ue_index)
+            self.bs_ue_dict_[bs_index] = np.append(self.bs_ue_dict_[bs_index], ue_index)
 
     def set_ue_to_region(self):
         return self._set_ue_to_region_func_dict.get(self.ue_distribution_)(self)

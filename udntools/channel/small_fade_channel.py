@@ -14,5 +14,7 @@ class SmallFadeChannel(object):
         self.generate_h_matrix()
 
     def generate_h_matrix(self):
-        self.h_matrix_ = np.random.randn(self.bs_number_, self.ue_number_)
-        self.h_square_matrix_ = self.h_matrix_ ** 2
+        h_matrix_i = np.random.randn(self.bs_number_, self.ue_number_)
+        h_matrix_q = np.random.randn(self.bs_number_, self.ue_number_)
+        self.h_square_matrix_ = h_matrix_i ** 2 + h_matrix_q ** 2
+        self.h_matrix_ = np.sqrt(self.h_square_matrix_)

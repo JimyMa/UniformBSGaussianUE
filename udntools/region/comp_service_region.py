@@ -10,7 +10,7 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
 
     def __init__(self, x_min, x_max, y_min, y_max, bs_number, ue_number,
                  layer=1, power=1.0, bs_distribution="uniform",
-                 ue_distribution="uniform", ue_sigma=0,
+                 ue_distribution="gaussian", ue_sigma=0,
                  path_loss_factor=4.0,
                  small_fade='Rayleigh'):
         ServiceRegion.__init__(self, x_min, x_max, y_min, y_max,
@@ -38,6 +38,79 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
             self.cluster_bs_position_[key] = \
                 np.reshape(self.bs_position_[values, :], (-1, 2))
 
+    def get_cluster_ue_position(self):
+        self.cluster_ue_position_ = {}
+        self.cluster_ue_set_ = {}
+        for key, values in self.cluster_set_.items():
+            self.cluster_bs_position_[key] = self.bs_position_[values, :]
+            self.cluster_ue_set_[key] = np.array([], dtype=np.int)
+            for bs_index in values:
+                if np.size(self.bs_ue_dict_[bs_index]) != 0:
+                    ue_position_this_bs = \
+                        np.reshape(self.ue_position_[:, self.bs_ue_dict_[bs_index]], (2, -1))
+
+                    self.cluster_ue_position_[key] = \
+                        np.concatenate([self.cluster_ue_position_[key],
+                                        ue_position_this_bs], axis=1)  \
+                        if key in self.cluster_ue_position_ \
+                        else ue_position_this_bs
+                    self.cluster_ue_set_[key] = np.append(self.cluster_ue_set_[key],
+                                                          self.bs_ue_dict_[bs_index])
+
+    def zfbf_equal_allocation(self):
+        self.get_cluster_ue_position()
+        self.generate_h_matrix()
+        distance_factor = dim2_distance(self.bs_position_, self.ue_position_)
+        large_loss_factor = distance_factor ** (-self.path_loss_factor)
+        small_loss_factor = large_loss_factor * self.h_square_matrix_
+        power_gain_factor = small_loss_factor.T
+        sig_gain_factor = self.h_matrix_ * distance_factor ** (-2.0)
+        sig_gain_factor = sig_gain_factor.T
+        for key, values in self.cluster_set_.items():
+            # print(key)
+            # print('*********')
+            while np.size(self.cluster_ue_set_[key]) != 0:
+                ue_num_now = np.size(self.cluster_ue_set_[key])
+                # print(ue_num_now)
+                # print('--------')
+                bs_num = np.size(self.cluster_set_[key])
+                ue_index = np.arange(0, ue_num_now, 1)
+                if ue_num_now >= bs_num:
+                    ue_chosen = np.sort(np.random.choice(ue_index, bs_num, replace=False))
+                else:
+                    ue_chosen = ue_index
+                # print(ue_chosen)
+                ue_index_now = self.cluster_ue_set_[key][ue_chosen]
+                ue_num_in_serve = np.size(ue_num_now)
+                self.cluster_ue_position_[key] = \
+                    np.delete(self.cluster_ue_position_[key], ue_chosen, axis=1)
+                self.cluster_ue_set_[key] = \
+                    np.delete(self.cluster_ue_set_[key], ue_chosen)
+                # print(values.dtype)
+                # print(ue_index_now.dtype)
+                # print(values)
+                # print(h_matrix.shape)
+                sig_g_inner = \
+                    np.reshape(sig_gain_factor[ue_index_now, :],
+                               (ue_num_in_serve, -1))[:, values]
+                sig_g_inner = np.reshape(sig_g_inner, (ue_num_in_serve, bs_num))
+                w_inner = np.array(np.mat(sig_g_inner).I)
+                w_square_inner = w_inner ** 2
+                p_received = 1 / np.max(np.sum(w_square_inner, axis=1))
+                i_received = \
+                    np.sum(np.delete(small_loss_factor[:, ue_index_now], values, axis=0),
+                           axis=0)
+                sir = p_received / i_received
+                # print(np.size(self.cluster_ue_set_[key]))
+                # print('......')
+                self.sir_array = np.append(self.sir_array, sir)
+
+    def sir_array_sim(self, iteration=10):
+        self.sir_array = np.array([])
+        for i in range(iteration):
+            self.set_ue_to_region()
+            self.select_ue()
+            self.zfbf_equal_allocation()
     # 这是一种用户选择方式
     # 区域联合起来了
     # 假设一簇内有 l 个基站
@@ -168,32 +241,4 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
             self.zfbf_equal_allocation()
     '''
 
-    def get_cluster_ue_position(self):
-        self.cluster_ue_position_ = {}
-        self.cluster_ue_set_ = {}
-        for key, values in self.cluster_set_.items():
-            self.cluster_bs_position_[key] = self.bs_position_[values, :]
-            self.cluster_ue_set_[key] = np.array([])
-            for bs_index in values:
-                ue_position_this_bs = \
-                    np.reshape(self.ue_position_[:, self.bs_ue_dict_[bs_index]], (2, -1))
-                self.cluster_ue_position_[key] = \
-                    np.concatenate([self.cluster_ue_position_[key],
-                                    ue_position_this_bs], axis=1)  \
-                    if np.size(self.cluster_ue_position_[key]) > 0 \
-                    else ue_position_this_bs
-                self.cluster_ue_set_[key] = np.append(self.cluster_ue_set_[key],
-                                                      self.bs_ue_dict_[bs_index])
 
-    def zfbf_equal_allocation(self):
-        self.get_cluster_ue_position()
-        self.generate_h_matrix()
-        for key, values in self.cluster_set_.items():
-            ue_num_now = np.size(self.cluster_set_[key])
-            bs_num = np.size(self.cluster_ue_set_[key])
-            ue_index = np.arange(0, ue_num_now, 1)
-            if ue_num_now >= bs_num:
-                ue_chosen = np.sort(np.random.choice(ue_index, bs_num, replace=False))
-            else:
-                ue_chosen = ue_index
-        pass
