@@ -4,6 +4,7 @@ from ..utils.dim2_distance import dim2_distance
 from ..utils.dfs_dict_by_distance import DFSDictByDistance
 from ..channel.small_fade_channel import SmallFadeChannel
 from ..channel.large_fade_channel import LargeFadeChannel
+from sklearn.cluster import KMeans
 
 
 class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
@@ -27,7 +28,28 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
         self.cluster_ue_position_ = {}
         self.cluster_ue_set_ = {}
         self.sir_array = np.array([])
-        self.sir_array_db = np.array([])
+        self.sir_db_array = np.array([])
+
+    def cluster_by_kmeans(self, means_num):
+        self.cluster_set_ = {}
+        self.cluster_bs_position_ = {}
+        kmeans = KMeans(n_clusters=means_num, random_state=0).fit(self.bs_position_)
+        distance = dim2_distance(self.bs_position_, kmeans.cluster_centers_.T)
+        means_index = np.argmin(distance, axis=1)
+        # print(means_index)
+        # TODO: get self.cluster_set_ and self.cluster_bs_position_ by means_index
+        for i in range(means_num):
+            self.cluster_set_[i] = np.array([], dtype=np.int)
+            self.cluster_bs_position_[i] = np.array([])
+        for index, value in enumerate(means_index):
+            # print(self.cluster_bs_position_[value])
+            self.cluster_set_[value] = np.append(self.cluster_set_[value], index)
+            index_bs_position = np.reshape(self.bs_position_[index, :], (-1, 2))
+            self.cluster_bs_position_[value] = \
+                np.concatenate([self.cluster_bs_position_[value],
+                                index_bs_position], axis=0) \
+                if np.size(self.cluster_bs_position_[value]) > 0 \
+                else index_bs_position
 
     def cluster_by_dfs(self, distance_thold):
         self.cluster_set_ = {}
@@ -101,12 +123,15 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
                     np.sum(np.delete(small_loss_factor[:, ue_index_now], values, axis=0),
                            axis=0)
                 sir = p_received / i_received
+                sir_db = 10 * np.log10(sir)
                 # print(np.size(self.cluster_ue_set_[key]))
                 # print('......')
                 self.sir_array = np.append(self.sir_array, sir)
+                self.sir_db_array = np.append(self.sir_db_array, sir_db)
 
     def sir_array_sim(self, iteration=10):
         self.sir_array = np.array([])
+        self.sir_db_array = np.array([])
         for i in range(iteration):
             self.set_ue_to_region()
             self.select_ue()

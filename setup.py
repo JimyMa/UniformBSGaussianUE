@@ -5,7 +5,7 @@ setup(
     packages=["udntools"],
     install_requires=[
         'scipy',
-        'matplotlib',
-        'numpy'
+        'numpy',
+        'sklearn'
     ]
 )
