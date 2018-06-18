@@ -1,15 +1,10 @@
-# 内容介绍见:
-- [密集热点区域无线网络的性能分析与优化](https://jimyma.github.io/2018/03/12/UDNs/)
-- [小基站服务用户数的统计特性的分析](https://jimyma.github.io/2018/03/15/statistics_select_user_num/)
-- [有关超密集组网的问题汇总（持续更新）](https://jimyma.github.io/2018/03/22/UDNsQA/)
-
 
 # 主要程序清单和相应程序简要说明
 
 毕设的程序采用:
-- **Python 3.5**
-- **Ubuntu 16.04**
-- **PyCharm 2017.3**
+- **Python 3.5** 
+- **Ubuntu 16.04** 
+- **PyCharm 2017.3** 
 - **Jupyter Notebook**
 
 下面对程序进行简要的说明，下面按层次介绍，第一个层次为网络的整体的架构，按树形结构表示如下：
@@ -29,7 +24,7 @@ program
 |README.md|   -   |存放介绍毕设内容的一个超链接|
 |setup.py |   -   |注册编写的包到Python的环境变量列表里|
 |udntools |   d   |超密集组网的工具包，是程序的主要部分|
-|examples |   d   |用于存放应用工具包得到的理论和仿真图|
+|examples |   d   |用于存放应用工具包得到的理论和仿真图| 
 
 程序的总体架构为一个两级的架构：
 - "udntools" 包中包含用于实现理论分析和仿真的类和方法，
@@ -59,8 +54,8 @@ udntools
 |    bs   |   d   |表示微基站属性的包|
 |    ue   |   d   |表示用户的属性的包|
 |  channel|   d   |表示信道的特性的包|
-|  region |   d   |网络性能仿真的接口|
-|  utils  |   d   |辅助实现仿真的方法|
+|  region |   d   |网络性能仿真的接口| 
+|  utils  |   d   |辅助实现仿真的方法| 
 
 "udntools" 工具包中包含 5 个子包，其中前 4 个子包分别用于完成对基站，用户，信道，区域的建模，
 最后的 "utils" 包包含用于辅助实现建模功能的方法。
@@ -86,7 +81,7 @@ bs
 
 |  名称     |  类型 |      说明      |
 |:--------:|:-----:|:-------------:|
-|bs_number_|  对象  | 基站的个数|
+|bs_number_|  对象  | 基站的个数| 
 |bs_power_ |  对象  | 基站的功率|
 |bs_distribution_|对象|基站的分布|
 |bs_position_| 对象 | 基站的位置|
@@ -113,10 +108,10 @@ ue
 
 - BaseUE
     - Inherit from class **Object**
-
+    
 |  名称     |  类型 |      说明      |
 |:--------:|:-----:|:-------------:|
-|ue_number_|  对象  | 用户的个数|
+|ue_number_|  对象  | 用户的个数| 
 |ue_distribution_|对象|用户的分布|
 |bs_position_| 对象 | 用户的位置|
 |set_ue_to_region|抽象方法|在区域内生成用户|
@@ -256,3 +251,5 @@ utils
 |dfs_dict_by_distance.py|-|实现深度优先搜索算法|
 |dim2_distance.py|-|计算基站和用户之间的欧式距离|
 |pc_theory.py|-|用于得到区域覆盖率的理论值|
+
+

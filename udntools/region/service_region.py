@@ -6,7 +6,7 @@ import numpy as np
 from ..utils.dim2_distance import dim2_distance
 
 
-class ServiceRegion(BaseRegion, BaseChannel, BaseBS, BaseUE):
+class ServiceRegion(BaseRegion, BaseBS, BaseUE):
     def __init__(self, x_min, x_max, y_min, y_max, bs_number, ue_number,
                  layer=1, power=1.0, bs_distribution="uniform",
                  ue_distribution="gaussian", ue_sigma=0):
