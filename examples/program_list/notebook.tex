@@ -1,7 +1,7 @@
 
 % Default to the notebook output style
 
-    
+
 
 
 % Inherit from the specified cell style.
@@ -9,11 +9,13 @@
 
 
 
-    
+
 \documentclass[11pt]{article}
 
-    
-    
+    \usepackage{fontspec, xunicode, xltxtra}
+    \setmainfont{Microsoft YaHei}
+    \usepackage{ctex}
+
     \usepackage[T1]{fontenc}
     % Nicer default font (+ math font) than Computer Modern for most use cases
     \usepackage{mathpazo}
@@ -38,7 +40,7 @@
     \DeclareCaptionLabelFormat{nolabel}{}
     \captionsetup{labelformat=nolabel}
 
-    \usepackage{adjustbox} % Used to constrain images to a maximum size 
+    \usepackage{adjustbox} % Used to constrain images to a maximum size
     \usepackage{xcolor} % Allow colors to be defined
     \usepackage{enumerate} % Needed for markdown enumerations to work
     \usepackage{geometry} % Used to adjust the document margins
@@ -54,8 +56,8 @@
     \usepackage[mathletters]{ucs} % Extended unicode (utf-8) support
     \usepackage[utf8x]{inputenc} % Allow utf-8 characters in the tex document
     \usepackage{fancyvrb} % verbatim replacement that allows latex
-    \usepackage{grffile} % extends the file name processing of package graphics 
-                         % to support a larger range 
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
     % The hyperref package gives us a pdf with properly built
     % internal navigation ('pdf bookmarks' for the table of contents,
     % internal cross-reference links, web links for URLs, etc.)
@@ -65,10 +67,10 @@
     \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
     \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
                                 % normalem makes italics be italics, not underlines
-    
 
-    
-    
+
+
+
     % Colors for the hyperref package
     \definecolor{urlcolor}{rgb}{0,.145,.698}
     \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
@@ -113,7 +115,7 @@
     \newcommand{\RegionMarkerTok}[1]{{#1}}
     \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
     \newcommand{\NormalTok}[1]{{#1}}
-    
+
     % Additional commands for more recent versions of Pandoc
     \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
     \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
@@ -132,8 +134,8 @@
     \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
     \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
     \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
-    
-    
+
+
     % Define a nice break command that doesn't care if a line doesn't already
     % exist.
     \def\br{\hspace*{\fill} \\* }
@@ -141,13 +143,13 @@
     \def\gt{>}
     \def\lt{<}
     % Document parameters
-    \title{program\_list}
-    
-    
-    
+    \title{程序验收报告}
+
+
+
 
     % Pygments definitions
-    
+
 \makeatletter
 \def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
     \let\PY@ul=\relax \let\PY@tc=\relax%
@@ -255,9 +257,9 @@
 
 
 
-    
+
     % Prevent overflowing lines due to hard-to-break entities
-    \sloppy 
+    \sloppy
     % Setup hyperref package
     \hypersetup{
       breaklinks=true,  % so long urls are correctly broken across lines
@@ -267,23 +269,29 @@
       citecolor=citecolor,
       }
     % Slightly bigger margins than the latex defaults
-    
+
     \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
-    
-    
 
-    \begin{document}
-    
-    
-    \maketitle
-    
-    
 
-    
-    \section{主要程序清单和相应程序简要说明}\label{ux4e3bux8981ux7a0bux5e8fux6e05ux5355ux548cux76f8ux5e94ux7a0bux5e8fux7b80ux8981ux8bf4ux660e}
 
-    毕设的程序采用: - \textbf{Python 3.5} - \textbf{Ubuntu 16.04} -
-\textbf{PyCharm 2017.3} - \textbf{Jupyter Notebook}
+\begin{document}
+
+\maketitle
+
+\section{主要程序清单和相应程序简要说明}\label{ux4e3bux8981ux7a0bux5e8fux6e05ux5355ux548cux76f8ux5e94ux7a0bux5e8fux7b80ux8981ux8bf4ux660e}
+
+\subsection{仿真软件及平台}\label{udntools-ux5de5ux5177ux5305}
+\begin{itemize}
+\tightlist
+\item
+  \textbf{Python 3.5}
+\item
+  \textbf{Ubuntu 16.04}
+\item
+  \textbf{PyCharm 2017.3}
+\item
+  \textbf{Jupyter Notebook}
+\end{itemize}
 
 第一个层次为网络的整体的架构，按树形结构表示如下：
 
@@ -560,7 +568,7 @@ pc\_theory.py & - & 用于得到区域覆盖率的理论值\tabularnewline
 
 
     % Add a bibliography block to the postdoc
-    
-    
-    
+
+
+
     \end{document}

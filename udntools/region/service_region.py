@@ -9,7 +9,7 @@ from ..utils.dim2_distance import dim2_distance
 class ServiceRegion(BaseRegion, BaseBS, BaseUE):
     def __init__(self, x_min, x_max, y_min, y_max, bs_number, ue_number,
                  layer=1, power=1.0, bs_distribution="uniform",
-                 ue_distribution="gaussian", ue_sigma=0):
+                 ue_distribution="gaussian", ue_sigma=0, if_fix_bs=True):
         """
         x_min(need to be assigned)
         x_max(need to be assigned)
@@ -27,9 +27,10 @@ class ServiceRegion(BaseRegion, BaseBS, BaseUE):
         distribution("uniform")
         """
         BaseRegion.__init__(self, x_min, x_max, y_min, y_max)
-        BaseBS.__init__(self, bs_number, layer, power, bs_distribution)
+        BaseBS.__init__(self, bs_number, layer, power, bs_distribution, if_fix_bs)
         BaseUE.__init__(self, ue_number, ue_distribution, ue_sigma)
-        self.set_bs_to_region()
+        if not if_fix_bs:
+            self.set_bs_to_region()
         self.set_ue_to_region()
         self.bs_ue_dict_ = {}
         # a dict that show which ue belong to which bs
