@@ -38,6 +38,7 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
         means_index = np.argmin(distance, axis=1)
         # print(means_index)
         # TODO: get self.cluster_set_ and self.cluster_bs_position_ by means_index
+        # Done
         for i in range(means_num):
             self.cluster_set_[i] = np.array([], dtype=np.int)
             self.cluster_bs_position_[i] = np.array([])
