@@ -11,13 +11,15 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
 
     def __init__(self, x_min, x_max, y_min, y_max, bs_number, ue_number,
                  layer=1, power=1.0, bs_distribution="uniform",
+                 if_fix_bs=True,
                  ue_distribution="gaussian", ue_sigma=0,
                  path_loss_factor=4.0,
                  small_fade='Rayleigh'):
         ServiceRegion.__init__(self, x_min, x_max, y_min, y_max,
                                bs_number, ue_number,
                                layer, power,
-                               bs_distribution, ue_distribution, ue_sigma)
+                               bs_distribution, ue_distribution, ue_sigma,
+                               if_fix_bs)
         LargeFadeChannel.__init__(self, path_loss_factor)
         SmallFadeChannel.__init__(self,
                                   self.bs_number_,

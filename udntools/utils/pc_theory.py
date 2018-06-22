@@ -4,8 +4,17 @@ import scipy.integrate as sci
 
 def rho(t, alpha):
     def f(u):
-        return 1 / (u ** (alpha / 2) + 1)
-    return np.power(t, 2 / alpha) * sci.quad(f, t **(-2 / alpha), 400)[0]
+        return 1.0 / (u ** (alpha / 2.0) + 1)
+    t_size = np.size(t)
+    t_shape = np.shape(t)
+
+    t_reshape = np.reshape(t, (-1))
+
+    rho_value = np.zeros(t_size)
+    for i in range(t_size):
+        rho_value[i] = np.power(t_reshape[i], 2.0 / alpha) \
+                       * sci.quad(f, t_reshape[i] **(-2.0 / alpha), 10000.0)[0]
+    return np.reshape(rho_value, t_shape)
 
 
 def pc_gaussian_one_point(t, lambda_s, alpha, sigma):
@@ -44,3 +53,18 @@ def pc_uniform_ue(t, alpha):
 def pc_uniform_ue_exp(t, alpha):
     t_exp = 2 ** t - 1
     return pc_uniform_one_point(t_exp, alpha)
+
+
+def p_coverage(r_p, r_i, sir_db, alpha):
+    sir = 10 ** (sir_db / 10)
+    sir_real = (r_p / r_i) ** alpha * sir
+    rho_value = rho(sir_real, alpha)
+    return np.exp(-np.pi * r_i ** 2 * 0.01 * rho_value)
+
+
+def get_radius_given_threshold(r_p, p_c, sir_db, alpha):
+    r_i = r_p
+    while p_coverage(r_p, r_i, sir_db, alpha) < p_c:
+        r_i += 0.1
+
+    return r_i
