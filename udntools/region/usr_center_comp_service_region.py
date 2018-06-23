@@ -35,6 +35,7 @@ class UsrCenterCompServiceRegion(CompServiceRegion,
         self.sir_db_hold_ = sir_db_hold
         self.ue_position_now_ = np.array([])
         self.bs_ue_now_dict_ = {}
+        self.cluster_by_usr()
 
     # 此种用户选择算法被废弃
     # 采用基站数远远小于用户数的情况
@@ -61,6 +62,7 @@ class UsrCenterCompServiceRegion(CompServiceRegion,
     def cluster_by_usr(self):
         position = np.array([])
         bs_index = np.array([], dtype=np.int)
+        self.bs_ue_now_dict_ = {}
         for key, values in self.bs_ue_dict_.items():
             self.bs_ue_now_dict_[key] = np.array([], dtype=np.int)
             if np.size(values) > 0:
@@ -69,14 +71,35 @@ class UsrCenterCompServiceRegion(CompServiceRegion,
                 position = ue_now if np.size(position) == 0 \
                     else np.concatenate([position, ue_now], axis=1)
                 self.ue_number_ -= 1
-                self.ue_position_ = np.delete(self.ue_position_, values[0], axis=1)
+                # self.ue_position_ = np.delete(self.ue_position_, values[0], axis=1)
                 self.bs_ue_dict_[key] = np.delete(values, 0)
                 self.bs_ue_now_dict_[key] = np.append(self.bs_ue_now_dict_[key], values[0])
         self.get_usr_circle_radius(position)
         self.ue_position_now_ = position
 
+        number = np.size(bs_index)
         distance = dim2_distance(self.bs_position_, position)
-        radius_sort = np.argsort(self.ue_radius_)
+        sort_index = np.argsort(-self.ue_radius_)
+        radius_sort = self.ue_radius_[sort_index]
+        bs_index_sort = bs_index[sort_index]
+        position_sort = position[:, sort_index]
+        distance_sort = distance[:, sort_index]
+
+        ue_center_set = {}
+        ue_map = {}
+        for i in range(number):
+            ue_map[self.bs_ue_now_dict_[bs_index_sort[i]][0]] = i
+            distance_this_ue = distance_sort[:, i]
+            distance_this_ue_sort = np.sort(distance_this_ue)
+            distance_this_ue_sort_index = np.argsort(distance_this_ue)
+            bs_this_ue_index = distance_this_ue_sort_index[distance_this_ue_sort
+                                                           < radius_sort[i] + 0.01]
+            ue_center_set[i] = bs_this_ue_index
+
+        print("-------------")
+        print(ue_center_set)
+        print("*************")
+        print(ue_map)
 
         # 下面开始分簇
 
