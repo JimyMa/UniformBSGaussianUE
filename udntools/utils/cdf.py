@@ -16,6 +16,9 @@ def cdf_y_axis(x_axis, data):
                 index_now += 1
             else:
                 break
-    while index_now < x_axis_size - 1:
+    if index_now == 0:
+        return np.zeros(np.shape(x_axis))
+    while index_now < x_axis_size:
         cdf.append(cdf[-1])
+        index_now += 1
     return np.array(cdf)

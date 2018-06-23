@@ -3,7 +3,7 @@ import numpy as np
 
 class BaseRegion(object):
 
-    _atom = 0.5
+    _atom = 0.3
 
     def __init__(self,
                  x_min,

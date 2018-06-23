@@ -17,7 +17,8 @@ class UsrCenterCompServiceRegion(CompServiceRegion,
                  path_loss_factor=4.0,
                  small_fade='Rayleigh',
                  p_c_hold=0.6,
-                 sir_db_hold=3):
+                 sir_db_hold=3.0,
+                 max_bs_number=3):
 
         CompServiceRegion.__init__(self,
                                    x_min, x_max,
@@ -35,6 +36,8 @@ class UsrCenterCompServiceRegion(CompServiceRegion,
         self.sir_db_hold_ = sir_db_hold
         self.ue_position_now_ = np.array([])
         self.bs_ue_now_dict_ = {}
+        self.max_bs_number_ = max_bs_number
+        self.ue_number_now_ = 0
         self.cluster_by_usr()
 
     # 此种用户选择算法被废弃
@@ -78,11 +81,11 @@ class UsrCenterCompServiceRegion(CompServiceRegion,
         self.ue_position_now_ = position
 
         number = np.size(bs_index)
+        self.ue_number_now_ = number
         distance = dim2_distance(self.bs_position_, position)
         sort_index = np.argsort(-self.ue_radius_)
         radius_sort = self.ue_radius_[sort_index]
         bs_index_sort = bs_index[sort_index]
-        position_sort = position[:, sort_index]
         distance_sort = distance[:, sort_index]
 
         ue_center_set = {}
@@ -96,12 +99,81 @@ class UsrCenterCompServiceRegion(CompServiceRegion,
                                                            < radius_sort[i] + 0.01]
             ue_center_set[i] = bs_this_ue_index
 
+        '''
         print("-------------")
         print(ue_center_set)
         print("*************")
         print(ue_map)
+        print("@@@@@@@@@@@")
+        print(self.bs_ue_now_dict_)
+        '''
 
         # 下面开始分簇
+        # 表示用户已经被分簇
 
-        # for index, value in enumerate(position):
+        user_clustered_array = np.array([], dtype=np.int)
+        bs_clustered_array = np.array([], dtype=np.int)
+        self.cluster_set_ = {}
+        self.cluster_ue_set_ = {}
+        self.cluster_bs_position_ = {}
+        self.cluster_ue_position_ = {}
+        count = 0
+        for key, values in ue_center_set.items():
+            # print(values)
+            if np.size(values) > self.max_bs_number_:
+                self.cluster_set_[count] = values[0:self.max_bs_number_]
+                self.cluster_bs_position_[count] = \
+                    self.bs_position_[values[0:self.max_bs_number_]]
 
+            elif self.max_bs_number_ >= np.size(values) > 0:
+                self.cluster_set_[count] = values
+                self.cluster_bs_position_[count] = \
+                    self.bs_position_[values]
+
+            else:
+                continue
+
+            self.cluster_ue_set_[count] = np.array([], dtype=np.int)
+            self.cluster_ue_position_[count] = np.array([])
+            # 删除对应基站的用户
+            for value in self.cluster_set_[count]:
+                # print(ue_map[self.bs_ue_now_dict_[value][0]])
+                if np.size(self.bs_ue_now_dict_[value]) > 0:
+                    ue_center_set[ue_map[self.bs_ue_now_dict_[value][0]]] = \
+                        np.array([], dtype=np.int)
+                    self.cluster_ue_set_[count] = np.append(self.cluster_ue_set_[count],
+                                                            self.bs_ue_now_dict_[value])
+                '''
+                if value in bs_clustered_array:
+                    print("error")
+                    print(value)
+                    print(count)
+                '''
+
+            self.cluster_ue_position_[count] = \
+                self.ue_position_[:, self.cluster_ue_set_[count]]
+
+            bs_clustered_array = np.append(bs_clustered_array,
+                                           self.cluster_set_[count])
+
+            user_clustered_array = np.append(user_clustered_array,
+                                             self.cluster_ue_set_[count])
+
+            # 删除相应用户的基站
+            for value in self.cluster_set_[count]:
+                for key_2, values_2 in ue_center_set.items():
+                    ue_center_set[key_2] = \
+                        np.delete(values_2, np.argwhere(values_2 == value))
+
+            # print(ue_center_set)
+            count += 1
+
+        '''
+        print("$$$$$$$$$$$$")
+        print(np.sort(bs_clustered_array))
+        print("&&&&&&&&&&&&&&")
+        print(np.size(user_clustered_array))
+
+        print(self.cluster_set_)
+        print(ue_center_set)
+        '''
