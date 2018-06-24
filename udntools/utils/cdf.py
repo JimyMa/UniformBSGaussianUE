@@ -12,13 +12,13 @@ def cdf_y_axis(x_axis, data):
     for index, value in enumerate(data_sort):
         if value > x_axis[index_now]:
             cdf.append((index + 1) / total)
-            if index_now < x_axis_size - 1:
+            if len(cdf) < x_axis_size:
                 index_now += 1
             else:
                 break
     if index_now == 0:
         return np.zeros(np.shape(x_axis))
-    while index_now < x_axis_size:
+    while len(cdf) < x_axis_size:
         cdf.append(cdf[-1])
         index_now += 1
     return np.array(cdf)
