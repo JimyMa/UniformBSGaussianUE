@@ -8,10 +8,12 @@ from ..utils.dim2_distance import dim2_distance
 
 class ServiceRegion(BaseRegion, BaseBS, BaseUE):
     def __init__(self, x_min, x_max, y_min, y_max, bs_number, ue_number,
-                 layer=1, power=1.0, bs_distribution="single_circle",
+                 layer=1, power=1.0, bs_distribution="square_grid",
                  ue_distribution="gaussian", ue_sigma=0,
                  if_fix_bs=True,
-                 bs_radius_1=50):
+                 bs_radius_1=50,
+                 grid_l_1=10,
+                 grid_l_2=10):
         """
         x_min(need to be assigned)
         x_max(need to be assigned)
@@ -32,6 +34,8 @@ class ServiceRegion(BaseRegion, BaseBS, BaseUE):
         BaseBS.__init__(self, bs_number, layer, power, bs_distribution, if_fix_bs)
         BaseUE.__init__(self, ue_number, ue_distribution, ue_sigma)
         self.bs_radius_1_ = bs_radius_1
+        self.grid_l_1_ = grid_l_1
+        self.grid_l_2_ = grid_l_2
         if not if_fix_bs:
             self.set_bs_to_region()
         self.set_ue_to_region()
@@ -50,6 +54,14 @@ class ServiceRegion(BaseRegion, BaseBS, BaseUE):
 
     def set_bs_radius_1(self, radius, fresh_ue=False):
         self.bs_radius_1_ = radius
+        self.set_bs_to_region()
+        if fresh_ue:
+            self.kill_ue()
+            self.set_ue_to_region()
+
+    def set_bs_grid_l1_l2(self, l1, l2, fresh_ue=True):
+        self.grid_l_1_ = l1
+        self.grid_l_2_ = l2
         self.set_bs_to_region()
         if fresh_ue:
             self.kill_ue()
@@ -84,6 +96,17 @@ class ServiceRegion(BaseRegion, BaseBS, BaseUE):
                                           (self.bs_number_, 1))
         self.bs_position_ = np.concatenate([bs_position_x, bs_position_y], axis=1)
 
+    def set_square_grid_bs_to_region(self):
+        l_1_array = np.arange(self.grid_l_1_ / 2.0, self.x_max, self.grid_l_1_)
+        l_2_array = np.arange(self.grid_l_2_ / 2.0, self.y_max, self.grid_l_2_)
+        self.bs_number_ = np.size(l_1_array) * np.size(l_2_array)
+        self.bs_position_ = np.zeros((self.bs_number_, 2))
+        count = 0
+        for l_1 in l_1_array:
+            for l_2 in l_2_array:
+                self.bs_position_[count, :] = np.array([l_1, l_2])
+                count += 1
+
     def set_single_circle_bs_to_region(self):
         self.bs_position_ = np.zeros((self.bs_number_, 2))
         x_ave = (self.x_min + self.x_max) / 2
@@ -95,7 +118,8 @@ class ServiceRegion(BaseRegion, BaseBS, BaseUE):
                 self.bs_radius_1_ * np.sin((2 * np.pi) / self.bs_number_ * i)
 
     _set_bs_to_region_func_dict = {"uniform": set_uniform_bs_to_region,
-                                   "single_circle": set_single_circle_bs_to_region}
+                                   "single_circle": set_single_circle_bs_to_region,
+                                   "square_grid": set_square_grid_bs_to_region}
 
     def select_ue(self):
         self.bs_ue_dict_ = {}
