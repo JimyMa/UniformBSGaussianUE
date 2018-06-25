@@ -83,7 +83,7 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
                                                           self.bs_ue_dict_[bs_index])
 
     def zfbf_equal_allocation(self):
-        self.get_cluster_ue_position()
+        # self.get_cluster_ue_position()
         self.generate_h_matrix()
         distance_factor = dim2_distance(self.bs_position_, self.ue_position_)
         large_loss_factor = distance_factor ** (-self.path_loss_factor)
@@ -138,6 +138,7 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
         for i in range(iteration):
             self.set_ue_to_region()
             self.select_ue()
+            self.generate_h_matrix()
             self.zfbf_equal_allocation()
     # 这是一种用户选择方式
     # 区域联合起来了
