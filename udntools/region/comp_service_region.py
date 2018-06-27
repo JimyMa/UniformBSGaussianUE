@@ -83,12 +83,11 @@ class CompServiceRegion(ServiceRegion, SmallFadeChannel, LargeFadeChannel):
                                                           self.bs_ue_dict_[bs_index])
 
     def zfbf_equal_allocation(self):
-        # self.get_cluster_ue_position()
+        self.get_cluster_ue_position()
         self.generate_h_matrix()
         distance_factor = dim2_distance(self.bs_position_, self.ue_position_)
         large_loss_factor = distance_factor ** (-self.path_loss_factor)
         small_loss_factor = large_loss_factor * self.h_square_matrix_
-        power_gain_factor = small_loss_factor.T
         sig_gain_factor = self.h_matrix_ * distance_factor ** (-2.0)
         sig_gain_factor = sig_gain_factor.T
         for key, values in self.cluster_set_.items():
