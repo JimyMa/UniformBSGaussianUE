@@ -7,7 +7,7 @@
 # 主要程序清单和相应程序简要说明
 
 毕设的程序采用:
-- **Python 3.5**
+- **Python 3.6**
 - **Ubuntu 16.04**
 - **PyCharm 2017.3**
 - **Jupyter Notebook**
