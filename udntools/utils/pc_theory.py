@@ -13,7 +13,7 @@ def rho(t, alpha):
     rho_value = np.zeros(t_size)
     for i in range(t_size):
         rho_value[i] = np.power(t_reshape[i], 2.0 / alpha) \
-                       * sci.quad(f, t_reshape[i] **(-2.0 / alpha), 10000.0)[0]
+                       * sci.quad(f, t_reshape[i] ** (-2.0 / alpha), 350000.0)[0]
     return np.reshape(rho_value, t_shape)
 
 
